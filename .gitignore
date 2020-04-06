@@ -83,3 +83,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+/package.json
+/package-lock.json
+/node_modules/
+/.idea/
