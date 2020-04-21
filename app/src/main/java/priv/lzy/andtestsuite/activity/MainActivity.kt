@@ -1,11 +1,11 @@
-package priv.lzy.andtestsuite
+package priv.lzy.andtestsuite.activity
 
-import android.content.Intent
 import android.net.VpnService
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import priv.lzy.andtestsuite.R
 import priv.lzy.andtestsuite.service.TestSuiteVpnService
 
 class MainActivity : AppCompatActivity(){
