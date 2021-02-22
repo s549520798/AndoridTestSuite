@@ -72,9 +72,10 @@ class LogUtil {
         @JvmStatic
         fun printTag(level: Int, tag: String, format: String, args: Array<Any>?) {
             var mLevel = 0
-            if (level == VERBOSE || level == DEBUG)
-            //过滤低级别日志信息
+            if (level == VERBOSE || level == DEBUG) {
+                //过滤低级别日志信息
                 return
+            }
 
             if (level == WARNING) mLevel = ERROR
 

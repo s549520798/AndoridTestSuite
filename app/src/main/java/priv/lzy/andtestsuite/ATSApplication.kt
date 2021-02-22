@@ -5,7 +5,7 @@ import android.content.Context
 import priv.lzy.andtestsuite.utils.LogUtil
 
 class ATSApplication : Application() {
-    val mTag = "ATSApplication"
+    private val mTag = "ATSApplication"
 
 
     override fun onCreate() {
