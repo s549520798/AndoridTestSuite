@@ -24,7 +24,7 @@ import java.util.*
  * @author Megatron King
  * @since 2018-11-01 23:29
  */
-class DefaultVirtualGatewayFactory private constructor(@param:NonNull private val mFactories: List<InterceptorFactory<Request?, RequestChain?, Response?, ResponseChain?>>) :
+class DefaultVirtualGatewayFactory private constructor(private val mFactories: List<InterceptorFactory<Request, Response>>) :
     VirtualGatewayFactory {
     override fun create(session: Session, request: Request, response: Response): VirtualGateway {
         return DefaultVirtualGateway(session, request, response, ArrayList(mFactories))
@@ -44,7 +44,7 @@ class DefaultVirtualGatewayFactory private constructor(@param:NonNull private va
          * @return A instance of [VirtualGatewayFactory].
          */
         @JvmOverloads
-        fun create(@NonNull factories: List<InterceptorFactory<Request?, RequestChain?, Response?, ResponseChain?>> = ArrayList()): VirtualGatewayFactory {
+        fun create(factories: List<InterceptorFactory<Request, Response>> = ArrayList()): VirtualGatewayFactory {
             return DefaultVirtualGatewayFactory(factories)
         }
     }

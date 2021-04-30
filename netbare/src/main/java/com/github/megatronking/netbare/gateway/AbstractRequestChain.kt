@@ -35,7 +35,7 @@ abstract class AbstractRequestChain<Req : Request> : Interceptor.IRequestChain<R
      * @param request A [Request] implementation.
      * @param interceptors A collection of interceptors.
      */
-    protected constructor(request: Req, interceptors: List<Interceptor<out Req, out Response>?>?)
+    protected constructor(request: Req, interceptors: List<Interceptor<Request, Response>>) : super(request, interceptors, 0, "")
 
     /**
      * Constructs an intercept chain for request.
@@ -45,5 +45,5 @@ abstract class AbstractRequestChain<Req : Request> : Interceptor.IRequestChain<R
      * @param index The head index.
      * @param tag The chain's tag.
      */
-    protected constructor(request: Req, interceptors: List<Interceptor<out Req, out Response>?>?, index: Int, tag: Any?)
+    protected constructor(request: Req, interceptors: List<Interceptor<Request, Response>>, index: Int, tag: String?) : super(request, interceptors, index, tag)
 }

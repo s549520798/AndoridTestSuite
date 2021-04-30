@@ -25,16 +25,17 @@ import java.util.*
  * @author Megatron King
  * @since 2018-12-09 12:07
  */
-abstract class PendingIndexedInterceptor<Req : Request?, ReqChain : AbstractRequestChain<Req, out Interceptor<*, *, *, *>?>?, Res : Response?, ResChain : AbstractResponseChain<Res, out Interceptor<*, *, *, *>?>?> :
-    IndexedInterceptor<Req, ReqChain, Res, ResChain>() {
+abstract class PendingIndexedInterceptor<Req : Request, ReqChain : Interceptor.IRequestChain<Req>, Res : Response, ResChain : Interceptor.IResponseChain<Res>?> :
+    IndexedInterceptor<Req, Res>() {
     private val mRequestPendingBuffers: MutableList<ByteBuffer>
     private val mResponsePendingBuffers: MutableList<ByteBuffer>
-    override fun onRequestFinished(@NonNull request: Req) {
+
+    override fun onRequestFinished(request: Req) {
         super.onRequestFinished(request)
         mRequestPendingBuffers.clear()
     }
 
-    override fun onResponseFinished(@NonNull response: Res) {
+    override fun onResponseFinished(response: Res) {
         super.onResponseFinished(response)
         mResponsePendingBuffers.clear()
     }

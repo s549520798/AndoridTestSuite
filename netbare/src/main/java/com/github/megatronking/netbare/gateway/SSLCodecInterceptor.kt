@@ -30,7 +30,7 @@ import java.nio.ByteBuffer
  * @author Megatron King
  * @since 2019/4/9 21:39
  */
-abstract class SSLCodecInterceptor<Req : Request?, ReqChain : AbstractRequestChain<Req, out Interceptor<*, *, *, *>?>?, Res : Response?, ResChain : AbstractResponseChain<Res, out Interceptor<*, *, *, *>?>?>(
+abstract class SSLCodecInterceptor<Req : Request, ReqChain : Interceptor.IRequestChain<Req>, Res : Response, ResChain : Interceptor.IResponseChain<Res>>(
     private val mEngineFactory: SSLEngineFactory?,
     private val mRequest: Req,
     private val mResponse: Res
@@ -54,30 +54,31 @@ abstract class SSLCodecInterceptor<Req : Request?, ReqChain : AbstractRequestCha
      * @return True if needs to decrypt.
      */
     protected abstract fun shouldDecrypt(chain: ResChain): Boolean
+
     @Throws(IOException::class)
-    override fun intercept(@NonNull chain: ReqChain, @NonNull buffer: ByteBuffer, index: Int) {
+    override fun intercept(chain: ReqChain, buffer: ByteBuffer) {
         if (mEngineFactory == null) {
             // Skip all interceptors
-            chain!!.processFinal(buffer)
+            chain.processFinal(buffer)
             mLog.w("JSK not installed, skip all interceptors!")
         } else if (shouldDecrypt(chain)) {
             decodeRequest(chain, buffer)
             mResponseCodec.prepareHandshake()
         } else {
-            chain!!.process(buffer)
+            chain.process(buffer)
         }
     }
 
     @Throws(IOException::class)
-    override fun intercept(@NonNull chain: ResChain, @NonNull buffer: ByteBuffer, index: Int) {
+    override fun intercept(chain: ResChain, buffer: ByteBuffer) {
         if (mEngineFactory == null) {
             // Skip all interceptors
-            chain!!.processFinal(buffer)
+            chain.processFinal(buffer)
             mLog.w("JSK not installed, skip all interceptors!")
         } else if (shouldDecrypt(chain)) {
             decodeResponse(chain, buffer)
         } else {
-            chain!!.process(buffer)
+            chain.process(buffer)
         }
     }
 

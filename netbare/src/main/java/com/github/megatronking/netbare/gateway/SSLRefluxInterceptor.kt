@@ -26,9 +26,9 @@ import java.nio.ByteBuffer
  * @author Megatron King
  * @since 2018-11-15 15:39
  */
-abstract class SSLRefluxInterceptor<Req : Request?, ReqChain : AbstractRequestChain<Req, out Interceptor<*, *, *, *>?>?, Res : Response?, ResChain : AbstractResponseChain<Res, out Interceptor<*, *, *, *>?>?>(
+abstract class SSLRefluxInterceptor<Req : Request, ReqChain : Interceptor.IRequestChain<Req>, Res : Response, ResChain : Interceptor.IResponseChain<Res>>(
     private val mRefluxCallback: SSLRefluxCallback<Req, Res>
-) : Interceptor<Req, ReqChain, Res, ResChain> {
+) : Interceptor<Req, Res> {
     /**
      * Should reflux the request buffer to SSL codec if the buffer is origin decrypted.
      *
@@ -44,24 +44,25 @@ abstract class SSLRefluxInterceptor<Req : Request?, ReqChain : AbstractRequestCh
      * @return True if needs to encrypt again.
      */
     protected abstract fun shouldReflux(chain: ResChain): Boolean
+
     @Throws(IOException::class)
-    override fun intercept(@NonNull chain: ReqChain, @NonNull buffer: ByteBuffer) {
+    override fun intercept(chain: ReqChain, buffer: ByteBuffer) {
         if (shouldReflux(chain)) {
-            mRefluxCallback.onRequest(chain!!.request(), buffer)
+            mRefluxCallback.onRequest(chain.request(), buffer)
         } else {
-            chain!!.process(buffer)
+            chain.process(buffer)
         }
     }
 
     @Throws(IOException::class)
-    override fun intercept(@NonNull chain: ResChain, @NonNull buffer: ByteBuffer) {
+    override fun intercept(chain: ResChain, buffer: ByteBuffer) {
         if (shouldReflux(chain)) {
-            mRefluxCallback.onResponse(chain!!.response(), buffer)
+            mRefluxCallback.onResponse(chain.response(), buffer)
         } else {
-            chain!!.process(buffer)
+            chain.process(buffer)
         }
     }
 
-    override fun onRequestFinished(@NonNull request: Req) {}
-    override fun onResponseFinished(@NonNull response: Res) {}
+    override fun onRequestFinished(request: Req) {}
+    override fun onResponseFinished(response: Res) {}
 }

@@ -31,9 +31,9 @@ import java.util.*
 /* package */
 internal class DefaultVirtualGateway(
     session: Session?, request: Request, response: Response,
-    factories: List<InterceptorFactory<Request, RequestChain, Response, ResponseChain>>
+    factories: List<InterceptorFactory<Request, Response>>
 ) : VirtualGateway(session, request, response) {
-    private val mInterceptors: MutableList<Interceptor<Request, RequestChain, Response, ResponseChain>>
+    private val mInterceptors: MutableList<Interceptor<Request, Response>>
     @Throws(IOException::class)
     override fun onRequest(buffer: ByteBuffer?) {
         RequestChain(mRequest, mInterceptors).process(buffer)
@@ -46,13 +46,13 @@ internal class DefaultVirtualGateway(
 
     override fun onRequestFinished() {
         for (interceptor in mInterceptors) {
-            interceptor!!.onRequestFinished(mRequest)
+            interceptor.onRequestFinished(mRequest)
         }
     }
 
     override fun onResponseFinished() {
         for (interceptor in mInterceptors) {
-            interceptor!!.onResponseFinished(mResponse)
+            interceptor.onResponseFinished(mResponse)
         }
     }
 

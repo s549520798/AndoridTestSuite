@@ -29,8 +29,8 @@ import java.nio.ByteBuffer
  * @author Megatron King
  * @since 2018-12-03 21:00
  */
-abstract class IndexedInterceptor<Req : Request?, ReqChain : AbstractRequestChain<Req, out Interceptor<*, *, *, *>?>?, Res : Response?, ResChain : AbstractResponseChain<Res, out Interceptor<*, *, *, *>?>?> :
-    Interceptor<Req, ReqChain, Res, ResChain> {
+abstract class IndexedInterceptor<Req : Request, Res : Response> :
+    Interceptor<Req, Res> {
     private var mRequestIndex = 0
     private var mResponseIndex = 0
 
@@ -45,7 +45,7 @@ abstract class IndexedInterceptor<Req : Request?, ReqChain : AbstractRequestChai
      */
     @Throws(IOException::class)
     protected abstract fun intercept(
-        @NonNull chain: ReqChain, @NonNull buffer: ByteBuffer,
+        chain: Interceptor.IRequestChain<Req>,  buffer: ByteBuffer,
         index: Int
     )
 
@@ -60,25 +60,25 @@ abstract class IndexedInterceptor<Req : Request?, ReqChain : AbstractRequestChai
      */
     @Throws(IOException::class)
     protected abstract fun intercept(
-        @NonNull chain: ResChain, @NonNull buffer: ByteBuffer,
+        chain: Interceptor.IResponseChain<Res>, buffer: ByteBuffer,
         index: Int
     )
 
     @Throws(IOException::class)
-    override fun intercept(@NonNull chain: ReqChain, @NonNull buffer: ByteBuffer) {
+    override fun intercept(chain: Interceptor.IRequestChain<Req>, buffer: ByteBuffer) {
         intercept(chain, buffer, mRequestIndex++)
     }
 
     @Throws(IOException::class)
-    override fun intercept(@NonNull chain: ResChain, @NonNull buffer: ByteBuffer) {
+    override fun intercept(chain: Interceptor.IResponseChain<Res>, buffer: ByteBuffer) {
         intercept(chain, buffer, mResponseIndex++)
     }
 
-    override fun onRequestFinished(@NonNull request: Req) {
+    override fun onRequestFinished(request: Req) {
         mRequestIndex = 0
     }
 
-    override fun onResponseFinished(@NonNull response: Res) {
+    override fun onResponseFinished(response: Res) {
         mResponseIndex = 0
     }
 }

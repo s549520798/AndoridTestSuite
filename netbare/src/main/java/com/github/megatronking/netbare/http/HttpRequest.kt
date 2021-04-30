@@ -125,7 +125,7 @@ open class HttpRequest  /* package */ internal constructor(
      *
      * @return A map of headers.
      */
-    fun requestHeaders(): Map<String?, MutableList<String?>?>? {
+    fun requestHeaders(): Map<String?, MutableList<String?>?> {
         return mSession!!.requestHeaders
     }
 

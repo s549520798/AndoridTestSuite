@@ -24,22 +24,21 @@ import java.nio.ByteBuffer
  * @author Megatron King
  * @since 2018-11-14 23:19
  */
-class ResponseChain :
-    AbstractResponseChain<Response, Interceptor<Request?, RequestChain?, Response?, ResponseChain?>?> {
+class ResponseChain : Interceptor.IResponseChain<Response> {
     private var mResponse: Response
 
     constructor(
         response: Response,
-        interceptors: List<Interceptor<Request?, RequestChain?, Response?, ResponseChain?>?>?
+        interceptors: List<Interceptor<Request, Response>>
     ) : super(response, interceptors) {
         mResponse = response
     }
 
     private constructor(
         response: Response,
-        interceptors: List<Interceptor<Request?, RequestChain?, Response?, ResponseChain?>?>?,
+        interceptors: List<Interceptor<Request, Response>>,
         index: Int,
-        tag: Any?
+        tag: String?
     ) : super(response, interceptors, index, tag) {
         mResponse = response
     }
@@ -48,17 +47,27 @@ class ResponseChain :
     override fun processNext(
         buffer: ByteBuffer?,
         response: Response,
-        interceptors: List<Interceptor<Request?, RequestChain?, Response?, ResponseChain?>?>?,
+        interceptors: List<Interceptor<Request, Response>>,
         index: Int,
-        tag: Any?
     ) {
-        var index = index
-        val interceptor = interceptors!![index]
-        interceptor?.intercept(ResponseChain(response, interceptors, ++index, tag), buffer!!)
+        var i = index
+        val interceptor = interceptors[index]
+        interceptor.intercept(ResponseChain(response, interceptors, ++i, mTag), buffer!!)
     }
 
-    @NonNull
     override fun response(): Response {
         return mResponse
+    }
+
+    override fun processFinal(buffer: ByteBuffer?) {
+        mFlow.process(buffer)
+    }
+
+    override fun process(buffer: ByteBuffer?) {
+        if (mIndex >= mInterceptors.size) {
+            processFinal(buffer)
+        } else {
+            processNext(buffer, mFlow, mInterceptors, mIndex)
+        }
     }
 }

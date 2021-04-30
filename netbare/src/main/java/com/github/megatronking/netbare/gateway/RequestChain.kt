@@ -24,21 +24,22 @@ import java.nio.ByteBuffer
  * @author Megatron King
  * @since 2018-11-14 23:18
  */
-class RequestChain : AbstractRequestChain<Request> {
+class RequestChain : Interceptor.IRequestChain<Request> {
+
     private var mRequest: Request
 
     constructor(
         request: Request,
-        interceptors: List<Interceptor<Request, Response>?>?
+        interceptors: List<Interceptor<out Request, out Response>>
     ) : super(request, interceptors) {
         mRequest = request
     }
 
     private constructor(
         request: Request,
-        interceptors: List<Interceptor<out Request, out Response>?>?,
+        interceptors: List<Interceptor<out Request, out Response>>,
         index: Int,
-        tag: Any?
+        tag: String?
     ) : super(request, interceptors, index, tag) {
         mRequest = request
     }
@@ -47,23 +48,16 @@ class RequestChain : AbstractRequestChain<Request> {
     override fun processNext(
         buffer: ByteBuffer?,
         request: Request,
-        interceptors: List<Interceptor<out Request, out Response>?>?,
+        interceptors: List<Interceptor<out Request, out Response>>,
         index: Int
     ) {
-        var index = index
-        val interceptor = interceptors?.get(index)
-        interceptor?.intercept(RequestChain(request, interceptors, ++index, "tag"), buffer!!)
+        var i = index
+        val interceptor = interceptors.get(i)
+        interceptor.intercept(RequestChain(request, interceptors, ++i, mTag), buffer!!)
     }
 
     override fun request(): Request {
         return mRequest
     }
 
-    override fun processFinal(buffer: ByteBuffer?) {
-        mRequest.process(buffer)
-    }
-
-    override fun process(buffer: ByteBuffer?) {
-        TODO("Not yet implemented")
-    }
 }

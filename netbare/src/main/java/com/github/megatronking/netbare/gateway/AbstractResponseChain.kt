@@ -35,7 +35,7 @@ abstract class AbstractResponseChain<Res : Response> : Interceptor.IResponseChai
      * @param response A [Response] implementation.
      * @param interceptors A collection of interceptors.
      */
-    protected constructor(response: Res, interceptors: List<Interceptor<out Request, Res>?>?)
+    protected constructor(response: Res, interceptors: List<Interceptor<Request, Res>>) : super(response, interceptors, 0, "")
 
     /**
      * Constructs an intercept chain for response.
@@ -45,5 +45,6 @@ abstract class AbstractResponseChain<Res : Response> : Interceptor.IResponseChai
      * @param index The head index.
      * @param tag The chain's tag.
      */
-    protected constructor(response: Res?, interceptors: List<Interceptor<out Request, Res>?>?, index: Int, tag: Any?)
+    protected constructor(response: Res, interceptors: List<Interceptor<Request, Res>>, index: Int, tag: String?) :
+            super(response, interceptors, index, tag)
 }

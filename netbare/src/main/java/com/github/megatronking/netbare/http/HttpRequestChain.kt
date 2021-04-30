@@ -16,6 +16,7 @@
 package com.github.megatronking.netbare.http
 
 import com.github.megatronking.netbare.gateway.AbstractRequestChain
+import com.github.megatronking.netbare.gateway.Interceptor
 import java.io.IOException
 import java.nio.ByteBuffer
 
@@ -26,31 +27,31 @@ import java.nio.ByteBuffer
  * @since 2018-11-16 23:21
  */
 open class HttpRequestChain /* package */ /* package */ @JvmOverloads internal constructor(
-    private val mZygoteRequest: HttpZygoteRequest?, interceptors: List<HttpInterceptor?>?,
-    index: Int = 0, tag: Any? = null
-) : AbstractRequestChain<HttpRequest, HttpInterceptor?>(
+    private val mZygoteRequest: HttpZygoteRequest,
+    interceptors: List<HttpInterceptor>,
+    index: Int = 0, tag: String? = null
+) : Interceptor.IRequestChain<HttpRequest>(
     mZygoteRequest, interceptors, index, tag
 ) {
-    fun zygoteRequest(): HttpZygoteRequest? {
+    fun zygoteRequest(): HttpZygoteRequest {
         return mZygoteRequest
     }
 
     @Throws(IOException::class)
     override fun processNext(
         buffer: ByteBuffer?, request: HttpRequest,
-        interceptors: List<HttpInterceptor?>?, index: Int, tag: Any?
+        interceptors: List<HttpInterceptor>, index: Int, tag: Any?
     ) {
         var index = index
-        val interceptor = interceptors!![index]
-        interceptor?.intercept(
+        val interceptor = interceptors[index]
+        interceptor.intercept(
             HttpRequestChain(mZygoteRequest, interceptors, ++index, tag),
             buffer!!
         )
     }
 
-    @NonNull
     override fun request(): HttpRequest {
-        val active = mZygoteRequest.getActive()
-        return active ?: mZygoteRequest!!
+        val active = mZygoteRequest.active
+        return active ?: mZygoteRequest
     }
 }

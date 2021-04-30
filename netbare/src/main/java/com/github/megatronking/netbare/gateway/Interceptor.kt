@@ -80,16 +80,17 @@ interface Interceptor<Req : Request, Res : Response> {
      */
     fun onResponseFinished(response: Res)
 
-    abstract class Chain<T : TunnelFlow> protected constructor(
+    abstract class Chain<T: TunnelFlow> protected constructor(
         flow: T,
-        interceptors: List<Interceptor<out Request,out Response>>,
+        interceptors: List<Interceptor<out Request, out Response>>,
         index: Int = 0,
-        tag: Any? = null
+        tag: String? = null
     ){
 
-        private val mFlow: T = flow
-        private val mInterceptors: List<Interceptor<out Request,out Response>> = interceptors
-        private val mIndex: Int = index
+        val mFlow: T = flow
+        val mInterceptors: List<Interceptor<out Request, out Response>> = interceptors
+        val mIndex: Int = index
+        var mTag : String? = tag
 
         /**
          * Hand the net packets to the next [Interceptor].
@@ -102,7 +103,7 @@ interface Interceptor<Req : Request, Res : Response> {
          * @throws IOException If an I/O error has occurred.
          */
         @Throws(IOException::class)
-        fun processNext(buffer: ByteBuffer?, flow : T,interceptors : List<Interceptor<out Request, out Response>?>?, index: Int)
+        abstract fun processNext(buffer: ByteBuffer?, flow : T,interceptors : List<Interceptor<out Request, out Response>>, index: Int)
 
         /**
          * Finish the interception and send the packet to tunnel.
@@ -111,7 +112,9 @@ interface Interceptor<Req : Request, Res : Response> {
          * @throws IOException If an I/O error has occurred.
          */
         @Throws(IOException::class)
-        fun processFinal(buffer: ByteBuffer?)
+        fun processFinal(buffer: ByteBuffer?) {
+            mFlow.process(buffer)
+        }
 
         /**
          * Hand the net packets to the next. If all interceptors have been processed, the packets will
@@ -121,10 +124,26 @@ interface Interceptor<Req : Request, Res : Response> {
          * @throws IOException If an I/O error has occurred.
          */
         @Throws(IOException::class)
-        fun process(buffer: ByteBuffer?)
+        fun process(buffer: ByteBuffer?) {
+            if (mIndex >= mInterceptors.size) {
+                processFinal(buffer)
+            } else {
+                processNext(buffer, mFlow, mInterceptors, mIndex)
+            }
+        }
     }
 
-    abstract class IRequestChain<Req : Request> : Chain<Req> {
+    abstract class IRequestChain<Req : Request>(request: Req, interceptors: List<Interceptor<out Request, out Response>>, index: Int, tag: String?)
+        : Chain<Req>(request, interceptors, index, tag) {
+
+        /**
+         * Constructs an intercept chain for request.
+         *
+         * @param request A [Request] implementation.
+         * @param interceptors A collection of interceptors.
+         */
+        protected constructor(request: Req, interceptors: List<Interceptor<out Request, out Response>>) : this(request, interceptors, 0, "")
+
         /**
          * Get the current request instance in this chain.
          *
@@ -133,7 +152,17 @@ interface Interceptor<Req : Request, Res : Response> {
         abstract fun request(): Req
     }
 
-    abstract class IResponseChain<Res : Response> : Chain<Res> {
+    abstract class IResponseChain<Res : Response>(response : Res, interceptors: List<Interceptor<out Request, out Response>>, index: Int, tag: String?)
+        : Chain<Response>(response, interceptors, index, tag) {
+
+        /**
+         * Constructs an intercept chain for response.
+         *
+         * @param response A [Response] implementation.
+         * @param interceptors A collection of interceptors.
+         */
+        protected constructor(response: Res, interceptors: List<Interceptor<Request, Response>>) : this(response, interceptors, 0, "")
+
         /**
          * Get the current response instance in this chain.
          *

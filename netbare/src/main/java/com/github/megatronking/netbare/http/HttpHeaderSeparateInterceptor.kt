@@ -35,8 +35,8 @@ internal class HttpHeaderSeparateInterceptor : HttpPendingIndexedInterceptor() {
     private var mLog: NetBareXLog? = null
     @Throws(IOException::class)
     override fun intercept(
-        @NonNull chain: HttpRequestChain,
-        @NonNull buffer: ByteBuffer,
+        chain: HttpRequestChain,
+        buffer: ByteBuffer,
         index: Int
     ) {
         var buffer: ByteBuffer? = buffer

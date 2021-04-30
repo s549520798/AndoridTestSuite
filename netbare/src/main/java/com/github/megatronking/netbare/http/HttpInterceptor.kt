@@ -31,4 +31,4 @@ import com.github.megatronking.netbare.gateway.Interceptor
  * @since 2018-11-15 19:40
  */
 interface HttpInterceptor :
-    Interceptor<HttpRequest?, HttpRequestChain?, HttpResponse?, HttpResponseChain?>
+    Interceptor<HttpRequest, HttpResponse>
