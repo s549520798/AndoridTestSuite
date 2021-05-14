@@ -1,3 +1,4 @@
-include ':netbare'
 rootProject.name='AndroidTestSuite'
 include ':app'
+include ':netbare'
+include ':log'
