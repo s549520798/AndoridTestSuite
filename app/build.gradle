@@ -68,6 +68,7 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.0.4'
 
     api project(':netbare')
+    api project(':log')
     //测试
     // optional - Test helpers for LiveData
     testImplementation "androidx.arch.core:core-testing:$arch_version"

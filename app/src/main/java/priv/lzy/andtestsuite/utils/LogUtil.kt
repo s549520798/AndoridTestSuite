@@ -80,11 +80,13 @@ class LogUtil {
             if (level == WARNING) mLevel = ERROR
 
             try {
-                var message: String =
+                val message: String =
                     if (args == null || args.isEmpty()) format else String.format(format, args)
 
                 if (BuildConfig.DEBUG) {
                     Log.println(toSysLevel(mLevel), tag, message)
+                } else {
+
                 }
 
             } catch (e: MissingFormatArgumentException) {
