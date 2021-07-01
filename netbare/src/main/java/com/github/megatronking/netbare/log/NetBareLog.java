@@ -175,12 +175,8 @@ public final class NetBareLog {
     }
 
     private static void printTag(int level, String tag, String msg, Object... args) {
-        if (level == VERBOSE || level == DEBUG) {
+        if (level == VERBOSE) {
             return;
-        }
-
-        if (level == WARN) {
-            level = ERROR;       //直接转成error，目前日志系统有bug，warning打印不出来
         }
 
         try {
@@ -188,7 +184,20 @@ public final class NetBareLog {
                     (args == null || args.length == 0) ? msg : String.format(msg, args);
 
             if (null != mLogListener) {
-                android.util.Log.println(level, tag, message);
+                switch (level) {
+                    case INFO:
+                        mLogListener.i(tag, message);
+                        break;
+                    case DEBUG:
+                        mLogListener.d(tag, message);
+                        break;
+                    case WARN:
+                        mLogListener.w(tag, message);
+                        break;
+                    case ERROR:
+                        mLogListener.e(tag, message);
+                        break;
+                }
             } else {
                 if (sDebug) {
                     android.util.Log.println(level, tag, message);
@@ -203,11 +212,11 @@ public final class NetBareLog {
         }
     }
 
-    private static String format(String format, Object... objs) {
-        if (objs == null || objs.length == 0) {
+    private static String format(String format, Object... obis) {
+        if (obis == null || obis.length == 0) {
             return format;
         } else {
-            return String.format(format, objs);
+            return String.format(format, obis);
         }
     }
 
