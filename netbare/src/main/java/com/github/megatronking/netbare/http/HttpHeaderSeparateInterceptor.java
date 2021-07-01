@@ -18,7 +18,7 @@ package com.github.megatronking.netbare.http;
 import androidx.annotation.NonNull;
 
 import com.github.megatronking.netbare.NetBareUtils;
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.ip.Protocol;
 import com.google.common.primitives.Bytes;
 
@@ -32,6 +32,8 @@ import java.nio.ByteBuffer;
  * @since 2018-12-08 15:36
  */
 /* package */ final class HttpHeaderSeparateInterceptor extends HttpPendingIndexedInterceptor {
+
+    private static final String TAG = "HttpHeaderSeparateInterceptor";
 
     private boolean mRequestHeaderHandled;
     private boolean mResponseHeaderHandled;
@@ -56,7 +58,7 @@ import java.nio.ByteBuffer;
         // Check the part end line.
         int headerEndIndex = Bytes.indexOf(buffer.array(), NetBareUtils.PART_END_BYTES);
         if (headerEndIndex < 0) {
-            mLog.w("Http request header data is not enough.");
+            mLog.w(TAG, "Http request header data is not enough.");
             // Not found the part end line, maybe the data is not enough, wait next buffer coming.
             pendRequestBuffer(buffer);
         } else {
@@ -64,7 +66,7 @@ import java.nio.ByteBuffer;
             // Check whether the header and the body are in the same buffer.
             boolean hasMultiPart = headerEndIndex < buffer.limit() - NetBareUtils.PART_END_BYTES.length;
             if (hasMultiPart) {
-                mLog.w("Multiple http request parts are founded.");
+                mLog.w(TAG, "Multiple http request parts are founded.");
                 // Separate the header and body data to two buffers.
                 int offset = headerEndIndex + NetBareUtils.PART_END_BYTES.length;
                 ByteBuffer headerBuffer = ByteBuffer.wrap(buffer.array(), buffer.position(), offset);
@@ -98,7 +100,7 @@ import java.nio.ByteBuffer;
         // Check the part end line.
         int headerEndIndex = Bytes.indexOf(buffer.array(), NetBareUtils.PART_END_BYTES);
         if (headerEndIndex < 0) {
-            mLog.w("Http response header data is not enough.");
+            mLog.w(TAG, "Http response header data is not enough.");
             // Not found the part end line, maybe the data is not enough, wait next buffer coming.
             pendResponseBuffer(buffer);
         } else {
@@ -106,7 +108,7 @@ import java.nio.ByteBuffer;
             // Check whether the header and the body are in the same buffer.
             boolean hasMultiPart = headerEndIndex < buffer.limit() - NetBareUtils.PART_END_BYTES.length;
             if (hasMultiPart) {
-                mLog.w("Multiple http response parts are founded.");
+                mLog.w(TAG, "Multiple http response parts are founded.");
                 // Separate the header and body data to two buffers.
                 int offset = headerEndIndex + NetBareUtils.PART_END_BYTES.length;
                 ByteBuffer headerBuffer = ByteBuffer.wrap(buffer.array(), buffer.position(), offset);

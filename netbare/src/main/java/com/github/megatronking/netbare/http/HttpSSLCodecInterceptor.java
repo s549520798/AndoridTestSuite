@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.http;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.gateway.Request;
 import com.github.megatronking.netbare.gateway.Response;
 import com.github.megatronking.netbare.ip.Protocol;
@@ -37,6 +37,8 @@ import java.nio.ByteBuffer;
  */
 /* package */ class HttpSSLCodecInterceptor extends HttpPendingIndexedInterceptor implements
         SSLRefluxCallback<HttpRequest, HttpResponse> {
+
+    private static final String TAG = "HttpSSLCodecInterceptor";
 
     private SSLEngineFactory mEngineFactory;
     private Request mRequest;
@@ -67,7 +69,7 @@ import java.nio.ByteBuffer;
         } else if (mEngineFactory == null) {
             // Skip all interceptors
             chain.processFinal(buffer);
-            mLog.w("JSK not installed, skip all interceptors!");
+            mLog.w(TAG, "JSK not installed, skip all interceptors!");
         } else {
             if (!mClientAlpnResolved) {
                 buffer = mergeRequestBuffer(buffer);
@@ -103,9 +105,9 @@ import java.nio.ByteBuffer;
                                 if (protocol == HttpProtocol.HTTP_1_1 || protocol == HttpProtocol.HTTP_2) {
                                     mRequestCodec.setSelectedAlpnProtocol(protocol);
                                     chain.request().session().protocol = protocol;
-                                    mLog.i("Server selected ALPN protocol: " + protocol.toString());
+                                    mLog.i(TAG, "Server selected ALPN protocol: " + protocol.toString());
                                 } else {
-                                    mLog.w("Unexpected server ALPN protocol: " + protocol.toString());
+                                    mLog.w(TAG, "Unexpected server ALPN protocol: " + protocol.toString());
                                 }
                             }
                             mRequestCodec.setSelectedAlpnResolved();
@@ -133,7 +135,7 @@ import java.nio.ByteBuffer;
         } else if (mEngineFactory == null) {
             // Skip all interceptors
             chain.processFinal(buffer);
-            mLog.w("JSK not installed, skip all interceptors!");
+            mLog.w(TAG, "JSK not installed, skip all interceptors!");
         } else {
             // Merge buffers
             decodeResponse(chain, buffer);

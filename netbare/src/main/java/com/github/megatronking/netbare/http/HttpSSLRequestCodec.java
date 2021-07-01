@@ -15,7 +15,7 @@
  */
 package com.github.megatronking.netbare.http;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.ssl.SSLEngineFactory;
 import com.github.megatronking.netbare.ssl.SSLRequestCodec;
 
@@ -36,6 +36,8 @@ import javax.net.ssl.SSLEngine;
  * @since 2019/1/3 23:01
  */
 /* package */ class HttpSSLRequestCodec extends SSLRequestCodec {
+
+    private static final String TAG = "HttpSSLRequestCodec";
 
     private HttpProtocol mSelectedAlpnProtocol;
     private boolean mAlpnEnabled;
@@ -85,7 +87,7 @@ import javax.net.ssl.SSLEngine;
             }
         } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException |
                 InvocationTargetException e) {
-            NetBareLog.wtf(e);
+            NetBareLog.wtf(TAG, e);
         }
         return sslEngine;
     }

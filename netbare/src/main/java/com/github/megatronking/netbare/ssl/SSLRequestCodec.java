@@ -15,7 +15,7 @@
  */
 package com.github.megatronking.netbare.ssl;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.gateway.Request;
 
 import java.util.concurrent.ExecutionException;
@@ -30,6 +30,8 @@ import javax.net.ssl.SSLEngine;
  * @since 2018-11-15 23:23
  */
 public class SSLRequestCodec extends SSLCodec {
+
+    private static final String TAG = "SSLRequestCodec";
 
     private Request mRequest;
     private SSLEngine mEngine;
@@ -58,7 +60,7 @@ public class SSLRequestCodec extends SSLCodec {
             String host = mRequest.host();
             if (host == null) {
                 // Unable to get host.
-                NetBareLog.e("Failed to get SSL host.");
+                NetBareLog.e(TAG, "Failed to get SSL host.");
                 return null;
             }
             try {
@@ -66,7 +68,7 @@ public class SSLRequestCodec extends SSLCodec {
                 mEngine.setUseClientMode(false);
                 mEngine.setNeedClientAuth(false);
             } catch (ExecutionException e) {
-                NetBareLog.e("Failed to create server SSLEngine: " + e.getMessage());
+                NetBareLog.e(TAG, "Failed to create server SSLEngine: " + e.getMessage());
             }
         }
         return mEngine;

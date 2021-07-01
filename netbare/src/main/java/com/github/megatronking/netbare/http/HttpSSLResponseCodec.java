@@ -18,7 +18,7 @@ package com.github.megatronking.netbare.http;
 import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.ssl.SSLEngineFactory;
 import com.github.megatronking.netbare.ssl.SSLResponseCodec;
 
@@ -41,6 +41,8 @@ import javax.net.ssl.SSLEngine;
  * @since 2019/1/3 23:31
  */
 /* package */ class HttpSSLResponseCodec extends SSLResponseCodec {
+
+    private static final String TAG = "HttpSSLResponseCodec";
 
     private SSLEngine mSSLEngine;
 
@@ -100,7 +102,7 @@ import javax.net.ssl.SSLEngine;
             mAlpnEnabled = true;
         } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException |
                 InvocationTargetException e) {
-            NetBareLog.wtf(e);
+            NetBareLog.wtf(TAG, e);
         }
     }
 
@@ -184,7 +186,7 @@ import javax.net.ssl.SSLEngine;
             }
         } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException
                 | IllegalAccessException | InvocationTargetException e) {
-            NetBareLog.e(e.getMessage());
+            NetBareLog.e(TAG, e.getMessage());
         }
         return alpnResult;
     }

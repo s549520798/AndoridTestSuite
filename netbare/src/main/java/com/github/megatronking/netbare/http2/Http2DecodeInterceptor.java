@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.http2;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.http.HttpId;
 import com.github.megatronking.netbare.http.HttpPendingIndexedInterceptor;
 import com.github.megatronking.netbare.http.HttpProtocol;
@@ -42,6 +42,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2019/1/5 14:19
  */
 public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor {
+
+    private static final String TAG = "Http2DecodeInterceptor";
 
     private final SSLRefluxCallback<HttpRequest, HttpResponse> mRefluxCallback;
 
@@ -238,7 +240,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
         }
         // Check payload length
         if (length + 6 > buffer.remaining()) {
-            mLog.w("No enough http2 frame length, expect: %d actual: %d", length,
+            mLog.w(TAG, "No enough http2 frame length, expect: %d actual: %d", length,
                     buffer.remaining() - 6);
             // Packet not enough for one frame, wait next packet.
             // Revert position.
@@ -246,7 +248,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
             callback.onPending(buffer);
             return;
         } else if (length + 6 < buffer.remaining()) {
-            mLog.w("Multi http2 frames in one buffer, first frame length : %d, buffer length: %d",
+            mLog.w(TAG, "Multi http2 frames in one buffer, first frame length : %d, buffer length: %d",
                     length + 9, buffer.remaining() + 3);
             // Separate multi-frames
             ByteBuffer newBuffer = ByteBuffer.allocate(length + 9);
@@ -264,7 +266,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
         int streamId = buffer.getInt() & 0x7fffffff;
         FrameType frameType = FrameType.parse(type);
         if (frameType == null) {
-            mLog.e("Unexpected http2 frame type: " + type);
+            mLog.e(TAG, "Unexpected http2 frame type: " + type);
             // Discard frames that have unknown or unsupported types.
             return;
         }
@@ -273,7 +275,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
                 throw new IOException("Http2 TYPE_CONTINUATION streamId changed!");
             }
         }
-        mLog.i("Decode a http2 frame: " + frameType + " stream(" + streamId +
+        mLog.i(TAG, "Decode a http2 frame: " + frameType + " stream(" + streamId +
                 ") length(" + length + ")");
         stream.id = streamId;
         switch (frameType) {
@@ -316,7 +318,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
             if (length != 0) {
                 throw new IOException("Http2 FRAME_SIZE_ERROR ack frame should be empty!");
             }
-            mLog.i("Http2 ack the settings");
+            mLog.i(TAG, "Http2 ack the settings");
             return;
         }
         if (length % 6 != 0) {
@@ -329,7 +331,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
             int value = buffer.getInt();
             switch (id) {
                 case 1: // SETTINGS_HEADER_TABLE_SIZE
-                    mLog.i("Http2 SETTINGS_HEADER_TABLE_SIZE: " + value);
+                    mLog.i(TAG, "Http2 SETTINGS_HEADER_TABLE_SIZE: " + value);
                     break;
                 case 2: // SETTINGS_ENABLE_PUSH
                     if (value != 0 && value != 1) {
@@ -338,20 +340,20 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
                     break;
                 case 3: // SETTINGS_MAX_CONCURRENT_STREAMS
                     id = 4; // Renumbered in draft 10.
-                    mLog.i("Http2 SETTINGS_MAX_CONCURRENT_STREAMS: " + value);
+                    mLog.i(TAG, "Http2 SETTINGS_MAX_CONCURRENT_STREAMS: " + value);
                     break;
                 case 4: // SETTINGS_INITIAL_WINDOW_SIZE
                     id = 7; // Renumbered in draft 10.
                     if (value < 0) {
                         throw new IOException("Http2 PROTOCOL_ERROR SETTINGS_INITIAL_WINDOW_SIZE > 2^31 - 1");
                     }
-                    mLog.i("Http2 SETTINGS_INITIAL_WINDOW_SIZE: " + value);
+                    mLog.i(TAG, "Http2 SETTINGS_INITIAL_WINDOW_SIZE: " + value);
                     break;
                 case 5: // SETTINGS_MAX_FRAME_SIZE
                     if (value < Http2.INITIAL_MAX_FRAME_SIZE || value > 16777215) {
                         throw new IOException("Http2 PROTOCOL_ERROR SETTINGS_MAX_FRAME_SIZE: " + value);
                     }
-                    mLog.i("Http2 INITIAL_MAX_FRAME_SIZE: " + value);
+                    mLog.i(TAG, "Http2 INITIAL_MAX_FRAME_SIZE: " + value);
                     break;
                 case 6: // SETTINGS_MAX_HEADER_LIST_SIZE
                     break; // Advisory only, so ignored.
@@ -448,11 +450,11 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
         if (errorCode == null) {
             throw new IOException("Http2 TYPE_GOAWAY unexpected error code: " + errorCodeInt);
         }
-        mLog.e("Http2 TYPE_GOAWAY error code: " + errorCode + " last stream: " + lastStreamId);
+        mLog.e(TAG, "Http2 TYPE_GOAWAY error code: " + errorCode + " last stream: " + lastStreamId);
         if (opaqueDataLength > 0) { // Must read debug data in order to not corrupt the connection.
             byte[] debugData = new byte[opaqueDataLength];
             buffer.get(debugData);
-            mLog.e("Http2 TYPE_GOAWAY debug data: " + new String(debugData));
+            mLog.e(TAG, "Http2 TYPE_GOAWAY debug data: " + new String(debugData));
         }
         buffer.position(initPosition);
     }

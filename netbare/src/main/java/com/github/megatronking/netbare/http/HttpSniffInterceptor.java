@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.http;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.ssl.SSLCodec;
 import com.github.megatronking.netbare.ssl.SSLWhiteList;
 
@@ -33,6 +33,8 @@ import java.nio.ByteBuffer;
  * @since 2018-12-04 11:58
  */
 /* package */ final class HttpSniffInterceptor extends HttpIndexedInterceptor {
+
+    private static final String TAG = "HttpSniffInterceptor";
 
     private static final int TYPE_HTTP = 1;
     private static final int TYPE_HTTPS = 2;
@@ -53,7 +55,7 @@ import java.nio.ByteBuffer;
         if (index == 0) {
             if (SSLWhiteList.contains(chain.request().ip())) {
                 mType = TYPE_WHITELIST;
-                NetBareLog.i("detect whitelist ip " + chain.request().ip());
+                NetBareLog.i(TAG, "detect whitelist ip " + chain.request().ip());
             } else {
                 mType = chain.request().host() == null ? TYPE_INVALID : verifyHttpType(buffer);
             }
@@ -108,7 +110,7 @@ import java.nio.ByteBuffer;
                 return TYPE_HTTPS;
             default:
                 // Unknown first byte data.
-                NetBareLog.e("Unknown first request byte : " + first);
+                NetBareLog.e(TAG, "Unknown first request byte : " + first);
                 break;
         }
         return TYPE_INVALID;

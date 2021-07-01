@@ -45,4 +45,10 @@ public class Request extends SessionTunnelFlow {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Request{" +
+                "mTunnel=" + mTunnel +
+                '}';
+    }
 }

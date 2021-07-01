@@ -18,7 +18,7 @@ package com.github.megatronking.netbare.proxy;
 import android.net.VpnService;
 import android.os.SystemClock;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.gateway.VirtualGateway;
 import com.github.megatronking.netbare.ip.IpHeader;
@@ -53,6 +53,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2018-10-11 17:35
  */
 /* package */ class UdpProxyServer extends BaseProxyServer {
+
+    private static final String TAG = "UdpProxyServer";
 
     private static final int SELECTOR_WAIT_TIME = 50;
 
@@ -117,10 +119,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
     @Override
     public void run() {
-        NetBareLog.i("[UDP]Server starts running.");
+        NetBareLog.i(TAG, "[UDP]Server starts running.");
         super.run();
         NetBareUtils.closeQuietly(mSelector);
-        NetBareLog.i("[UDP]Server stops running.");
+        NetBareLog.i(TAG, "[UDP]Server stops running.");
     }
 
     @Override

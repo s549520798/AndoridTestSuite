@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.http2;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.gateway.InterceptorChain;
 import com.github.megatronking.netbare.http.HttpInterceptor;
 import com.github.megatronking.netbare.http.HttpProtocol;
@@ -40,6 +40,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2019/1/5 14:24
  */
 public final class Http2EncodeInterceptor implements HttpInterceptor {
+
+    private static final String TAG = "Http2EncodeInterceptor";
 
     private final Map<Integer, Integer> mStreamRequestIndexes;
     private final Map<Integer, Integer> mStreamResponseIndexes;
@@ -203,7 +205,7 @@ public final class Http2EncodeInterceptor implements HttpInterceptor {
             if (byteCount == 0) {
                 flags |= Http2.FLAG_END_HEADERS;
                 if (endStream) {
-                    mLog.i("Http2 stream end: " + streamId);
+                    mLog.i(TAG, "Http2 stream end: " + streamId);
                     flags |= Http2.FLAG_END_STREAM;
                 }
             }
@@ -227,7 +229,7 @@ public final class Http2EncodeInterceptor implements HttpInterceptor {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             byte flags = 0;
             if (byteCount == 0 && endStream) {
-                mLog.i("Http2 stream end: " + streamId);
+                mLog.i(TAG, "Http2 stream end: " + streamId);
                 flags |= Http2.FLAG_END_STREAM;
             }
             os.write(frameHeader(streamId, length, type, flags));
@@ -238,7 +240,7 @@ public final class Http2EncodeInterceptor implements HttpInterceptor {
     }
 
     private byte[] frameHeader(int streamId, int length, byte type, byte flags) {
-        mLog.i("Encode a http2 frame: " + FrameType.parse(type) + " stream(" + streamId +
+        mLog.i(TAG, "Encode a http2 frame: " + FrameType.parse(type) + " stream(" + streamId +
                 ") length(" + length + ")");
         ByteBuffer header = ByteBuffer.allocate(Http2.FRAME_HEADER_LENGTH);
         header.put((byte) ((length >>> 16) & 0xff));

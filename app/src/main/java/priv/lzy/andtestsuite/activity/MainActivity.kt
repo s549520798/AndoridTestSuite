@@ -10,17 +10,10 @@ import priv.lzy.andtestsuite.service.TestSuiteVpnService
 
 class MainActivity : AppCompatActivity(){
 
-    private lateinit var mBtnBindService: Button
-    private lateinit var mVpnService: VpnService
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mBtnBindService = findViewById(R.id.button_bind_service)
-        mBtnBindService.setOnClickListener(mOnClickListener)
-
-        mVpnService = TestSuiteVpnService()
     }
 
 

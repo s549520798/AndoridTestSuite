@@ -15,6 +15,7 @@
  */
 package com.github.megatronking.netbare.gateway;
 
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.net.Session;
 
 import java.io.IOException;
@@ -31,6 +32,8 @@ import java.util.List;
  * @since 2018-11-01 23:35
  */
 /* package */ class DefaultVirtualGateway extends VirtualGateway {
+
+    private static final String TAG = "DefaultVirtualGateway";
 
     private final List<Interceptor<Request, RequestChain, Response, ResponseChain>> mInterceptors;
 
@@ -55,6 +58,7 @@ import java.util.List;
 
     @Override
     public void onRequestFinished() {
+        NetBareLog.i(TAG, "onRequestFinished mRequest: " + mRequest.toString() );
         for (Interceptor<Request, RequestChain, Response, ResponseChain> interceptor: mInterceptors) {
             interceptor.onRequestFinished(mRequest);
         }
@@ -62,6 +66,7 @@ import java.util.List;
 
     @Override
     public void onResponseFinished() {
+        NetBareLog.i(TAG, "onResponseFinished mResponse: " + mResponse.toString());
         for (Interceptor<Request, RequestChain, Response, ResponseChain> interceptor: mInterceptors) {
             interceptor.onResponseFinished(mResponse);
         }

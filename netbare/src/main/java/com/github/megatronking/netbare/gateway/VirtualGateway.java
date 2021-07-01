@@ -15,6 +15,7 @@
  */
 package com.github.megatronking.netbare.gateway;
 
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.net.Session;
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ import java.nio.ByteBuffer;
  * @since 2018-11-01 23:48
  */
 public class VirtualGateway {
+
+    private static final String TAG = "VirtualGateway";
 
     /**
      * The request tunnel connects to the server terminal. We can call
@@ -81,12 +84,14 @@ public class VirtualGateway {
      * Notify virtual gateway that no longer has data sent to the server.
      */
     public void onRequestFinished() {
+        NetBareLog.i(TAG, "onRequestFinished, mRequest = " + mRequest.toString());
     }
 
     /**
      * Notify virtual gateway that no longer has data sent to the client.
      */
     public void onResponseFinished() {
+        NetBareLog.i(TAG, "onResponseFinished mResponse " + mResponse.toString());
     }
 
 }

@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.http;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.http2.Http2;
 import com.github.megatronking.netbare.ssl.SSLRefluxCallback;
 import com.google.common.primitives.Bytes;
@@ -32,6 +32,8 @@ import java.nio.ByteBuffer;
  * @since 2019/1/5 14:02
  */
 /* package */ class Http2SniffInterceptor extends HttpIndexedInterceptor {
+
+    private static final String TAG = "Http2SniffInterceptor";
 
     private SSLRefluxCallback<HttpRequest, HttpResponse> mCallback;
     private NetBareXLog mLog;
@@ -52,7 +54,7 @@ import java.nio.ByteBuffer;
             if (request.isHttps()) {
                 if (buffer.hasRemaining() && Bytes.indexOf(buffer.array(),
                         Http2.CONNECTION_PREFACE) == buffer.position()) {
-                    mLog.i("Send a connection preface to remote server.");
+                    mLog.i(TAG, "Send a connection preface to remote server.");
                     request.session().protocol = HttpProtocol.HTTP_2;
                     if (buffer.remaining() == Http2.CONNECTION_PREFACE.length) {
                         // Skip preface frame data.
@@ -86,7 +88,7 @@ import java.nio.ByteBuffer;
             if (response.isHttps()) {
                 if (buffer.hasRemaining() && Bytes.indexOf(buffer.array(),
                         Http2.CONNECTION_PREFACE) == buffer.position()) {
-                    mLog.i("Receive a connection preface from remote server.");
+                    mLog.i(TAG, "Receive a connection preface from remote server.");
                     response.session().protocol = HttpProtocol.HTTP_2;
                     if (buffer.remaining() == Http2.CONNECTION_PREFACE.length) {
                         // Skip preface frame data.

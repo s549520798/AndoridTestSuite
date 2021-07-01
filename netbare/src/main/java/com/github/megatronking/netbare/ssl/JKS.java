@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.security.KeyChain;
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.NetBareUtils;
 
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
@@ -43,6 +43,8 @@ import java.security.cert.Certificate;
  * @since 2018-11-10 20:06
  */
 public class JKS {
+
+    private static final String TAG = "JKS";
 
     public static final String KEY_STORE_FILE_EXTENSION = ".p12";
     public static final String KEY_PEM_FILE_EXTENSION = ".pem";
@@ -135,9 +137,9 @@ public class JKS {
                     pw = new JcaPEMWriter(sw);
                     pw.writeObject(cert);
                     pw.flush();
-                    NetBareLog.i("Generate keystore succeed.");
+                    NetBareLog.i(TAG, "Generate keystore succeed.");
                 } catch (Exception e) {
-                    NetBareLog.e(e.getMessage());
+                    NetBareLog.e(TAG, e.getMessage());
                 } finally {
                     NetBareUtils.closeQuietly(os);
                     NetBareUtils.closeQuietly(sw);

@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.tunnel;
 
 import android.net.VpnService;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.ip.Protocol;
 
 import java.io.IOException;
@@ -34,6 +34,8 @@ import java.nio.channels.Selector;
  */
 public class UdpRemoteTunnel extends UdpTunnel {
 
+    private static final String TAG = "UdpRemoteTunnel";
+
     private final VpnService mVpnService;
     private NetBareXLog mLog;
 
@@ -48,7 +50,7 @@ public class UdpRemoteTunnel extends UdpTunnel {
     public void connect(InetSocketAddress address) throws IOException {
         if (mVpnService.protect(socket())) {
             super.connect(address);
-            mLog.i("Connect to remote server %s", address);
+            mLog.i(TAG, "Connect to remote server %s", address);
         } else {
             throw new IOException("[UDP]Can not protect remote tunnel socket.");
         }
@@ -57,19 +59,19 @@ public class UdpRemoteTunnel extends UdpTunnel {
     @Override
     public int read(ByteBuffer buffer) throws IOException {
         int len = super.read(buffer);
-        mLog.i("Read from remote: " + len);
+        mLog.i(TAG, "Read from remote: " + len);
         return len;
     }
 
     @Override
     public void write(ByteBuffer buffer) throws IOException {
-        mLog.i("Write to remote: " + buffer.remaining());
+        mLog.i(TAG, "Write to remote: " + buffer.remaining());
         super.write(buffer);
     }
 
     @Override
     public void close() {
-        mLog.i("Remote tunnel is closed.");
+        mLog.i(TAG, "Remote tunnel is closed.");
         super.close();
     }
 

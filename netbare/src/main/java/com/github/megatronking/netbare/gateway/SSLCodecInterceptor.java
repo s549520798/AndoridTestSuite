@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.gateway;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.ssl.SSLCodec;
 import com.github.megatronking.netbare.ssl.SSLEngineFactory;
 import com.github.megatronking.netbare.ssl.SSLRefluxCallback;
@@ -37,6 +37,8 @@ public abstract class SSLCodecInterceptor<Req extends Request, ReqChain extends 
         Res extends Response, ResChain extends AbstractResponseChain<Res, ? extends Interceptor>>
         extends PendingIndexedInterceptor<Req, ReqChain, Res, ResChain>
         implements SSLRefluxCallback<Req, Res> {
+
+    private static final String TAG = "SSLCodecInterceptor";
 
     private SSLEngineFactory mEngineFactory;
     private Req mRequest;
@@ -81,7 +83,7 @@ public abstract class SSLCodecInterceptor<Req extends Request, ReqChain extends 
         if (mEngineFactory == null) {
             // Skip all interceptors
             chain.processFinal(buffer);
-            mLog.w("JSK not installed, skip all interceptors!");
+            mLog.w(TAG, "JSK not installed, skip all interceptors!");
         } else if (shouldDecrypt(chain)) {
             decodeRequest(chain, buffer);
             mResponseCodec.prepareHandshake();
@@ -96,7 +98,7 @@ public abstract class SSLCodecInterceptor<Req extends Request, ReqChain extends 
         if (mEngineFactory == null) {
             // Skip all interceptors
             chain.processFinal(buffer);
-            mLog.w("JSK not installed, skip all interceptors!");
+            mLog.w(TAG, "JSK not installed, skip all interceptors!");
         } else if (shouldDecrypt(chain)) {
             decodeResponse(chain, buffer);
         } else {

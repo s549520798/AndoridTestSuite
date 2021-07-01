@@ -18,7 +18,7 @@ package com.github.megatronking.netbare.ssl;
 import android.os.Build;
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -62,6 +62,8 @@ import javax.net.ssl.X509TrustManager;
  * @since 2018-11-10 23:43
  */
 public final class SSLEngineFactory {
+
+    private static final String TAG = "SSLEngineFactory";
 
     private static final int ALIVE_MINUTES = 10;
     private static final int CONCURRENCY_LEVEL = 16;
@@ -285,7 +287,7 @@ public final class SSLEngineFactory {
             }
             return trustManagers;
         } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-            NetBareLog.wtf(e);
+            NetBareLog.wtf(TAG, e);
         }
         return null;
     }

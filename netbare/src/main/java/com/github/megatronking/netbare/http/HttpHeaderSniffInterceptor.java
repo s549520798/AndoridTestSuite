@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.http;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.ssl.SSLRefluxCallback;
 
 import java.io.IOException;
@@ -30,6 +30,8 @@ import java.nio.ByteBuffer;
  * @since 2019/1/31 16:13
  */
 /* package */ class HttpHeaderSniffInterceptor extends HttpIndexedInterceptor {
+
+    private static final String TAG = "HttpHeaderSniffInterceptor";
 
     private final SSLRefluxCallback<HttpRequest, HttpResponse> mCallback;
 
@@ -120,7 +122,7 @@ import java.nio.ByteBuffer;
                 return false;
             default:
                 // Unknown first byte data.
-                NetBareLog.w("Unknown first request header byte : " + first);
+                NetBareLog.w(TAG, "Unknown first request header byte : " + first);
                 break;
         }
         return true;
@@ -137,7 +139,7 @@ import java.nio.ByteBuffer;
                 return false;
             }
         }
-        NetBareLog.w("Unknown request header method : " + headerMethod);
+        NetBareLog.w(TAG, "Unknown request header method : " + headerMethod);
         return true;
     }
 
@@ -150,7 +152,7 @@ import java.nio.ByteBuffer;
                 return false;
             default:
                 // Unknown first byte data.
-                NetBareLog.w("Unknown first response header byte : " + first);
+                NetBareLog.w(TAG, "Unknown first response header byte : " + first);
                 break;
         }
         return true;
@@ -168,7 +170,7 @@ import java.nio.ByteBuffer;
                 return false;
             }
         }
-        NetBareLog.w("Unknown response header protocol : " + headerProtocol);
+        NetBareLog.w(TAG, "Unknown response header protocol : " + headerProtocol);
         return true;
     }
 

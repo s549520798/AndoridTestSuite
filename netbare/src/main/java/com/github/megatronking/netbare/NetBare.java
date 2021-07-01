@@ -24,6 +24,8 @@ import androidx.core.content.ContextCompat;
 
 import com.github.megatronking.netbare.gateway.DefaultVirtualGatewayFactory;
 import com.github.megatronking.netbare.gateway.VirtualGatewayFactory;
+import com.github.megatronking.netbare.log.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLogListener;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -148,6 +150,10 @@ public final class NetBare {
      */
     public void unregisterNetBareListener(NetBareListener listener) {
         mListeners.remove(listener);
+    }
+
+    public static void setOnNetBareLogListener(NetBareLogListener logListener) {
+        NetBareLog.setLogListener(logListener);
     }
 
     /* package */ NetBareConfig getConfig() {

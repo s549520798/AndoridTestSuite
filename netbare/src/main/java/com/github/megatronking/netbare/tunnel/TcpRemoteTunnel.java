@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.tunnel;
 
 import android.net.VpnService;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.ip.Protocol;
 
 import java.io.IOException;
@@ -34,6 +34,8 @@ import java.nio.channels.SocketChannel;
  */
 public class TcpRemoteTunnel extends TcpTunnel {
 
+    private static final String TAG = "TcpRemoteTunnel";
+
     private final VpnService mVpnService;
 
     private NetBareXLog mLog;
@@ -49,7 +51,7 @@ public class TcpRemoteTunnel extends TcpTunnel {
     public void connect(InetSocketAddress address) throws IOException {
         if (mVpnService.protect(socket())) {
             super.connect(address);
-            mLog.i("Connect to remote server %s", address);
+            mLog.i(TAG, "Connect to remote server %s", address);
         } else {
             throw new IOException("[TCP]Can not protect remote tunnel socket.");
         }
@@ -57,26 +59,26 @@ public class TcpRemoteTunnel extends TcpTunnel {
 
     @Override
     public void onConnected() throws IOException {
-        mLog.i("Remote tunnel is connected.");
+        mLog.i(TAG, "Remote tunnel is connected.");
         super.onConnected();
     }
 
     @Override
     public int read(ByteBuffer buffer) throws IOException {
         int len = super.read(buffer);
-        mLog.i("Read from remote: " + len);
+        mLog.i(TAG, "Read from remote: " + len);
         return len;
     }
 
     @Override
     public void write(ByteBuffer buffer) throws IOException {
-        mLog.i("Write to remote: " + buffer.remaining());
+        mLog.i(TAG, "Write to remote: " + buffer.remaining());
         super.write(buffer);
     }
 
     @Override
     public void close() {
-        mLog.i("Remote tunnel is closed.");
+        mLog.i(TAG, "Remote tunnel is closed.");
         super.close();
     }
 

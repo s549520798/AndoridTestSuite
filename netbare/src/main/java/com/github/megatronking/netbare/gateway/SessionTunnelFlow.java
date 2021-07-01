@@ -15,10 +15,14 @@
  */
 package com.github.megatronking.netbare.gateway;
 
+import androidx.annotation.NonNull;
+
 import com.github.megatronking.netbare.NetBareConfig;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.ip.Protocol;
 import com.github.megatronking.netbare.net.Session;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A tunnel flow contains the session information.
@@ -98,4 +102,11 @@ public abstract class SessionTunnelFlow implements TunnelFlow {
         return mSession.protocol;
     }
 
+    @NotNull
+    @Override
+    public String toString() {
+        return "SessionTunnelFlow{" +
+                "mSession=" + mSession +
+                '}';
+    }
 }

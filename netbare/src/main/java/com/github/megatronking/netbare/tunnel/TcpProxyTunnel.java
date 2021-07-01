@@ -15,7 +15,7 @@
  */
 package com.github.megatronking.netbare.tunnel;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.ip.Protocol;
 
 import java.io.IOException;
@@ -33,6 +33,8 @@ import java.nio.channels.SocketChannel;
  */
 public class TcpProxyTunnel extends TcpTunnel {
 
+    private static final String TAG = "TcpProxyTunnel";
+
     private NetBareXLog mLog;
 
     public TcpProxyTunnel(SocketChannel socketChannel, Selector selector, int remotePort) {
@@ -49,26 +51,26 @@ public class TcpProxyTunnel extends TcpTunnel {
 
     @Override
     public void onConnected() throws IOException {
-        mLog.i("Proxy tunnel is connected.");
+        mLog.i(TAG, "Proxy tunnel is connected.");
         super.onConnected();
     }
 
     @Override
     public int read(ByteBuffer buffer) throws IOException {
         int len = super.read(buffer);
-        mLog.i("Read from proxy: " + len);
+        mLog.i(TAG, "Read from proxy: " + len);
         return len;
     }
 
     @Override
     public void write(ByteBuffer buffer) throws IOException {
-        mLog.i("Write to proxy: " + buffer.remaining());
+        mLog.i(TAG, "Write to proxy: " + buffer.remaining());
         super.write(buffer);
     }
 
     @Override
     public void close() {
-        mLog.i("Proxy tunnel is closed.");
+        mLog.i(TAG, "Proxy tunnel is closed.");
         super.close();
     }
 

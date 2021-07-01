@@ -91,4 +91,20 @@ public final class Session {
         this.time = System.currentTimeMillis();
     }
 
+    @Override
+    public String toString() {
+        return "Session{" +
+                "protocol=" + protocol +
+                ", localPort=" + localPort +
+                ", remotePort=" + remotePort +
+                ", remoteIp=" + remoteIp +
+                ", id='" + id + '\'' +
+                ", time=" + time +
+                ", host='" + host + '\'' +
+                ", uid=" + uid +
+                ", packetIndex=" + packetIndex +
+                ", sendDataSize=" + sendDataSize +
+                ", receiveDataSize=" + receiveDataSize +
+                '}';
+    }
 }

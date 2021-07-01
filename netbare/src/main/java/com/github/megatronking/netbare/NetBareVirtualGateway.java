@@ -21,6 +21,7 @@ import com.github.megatronking.netbare.gateway.Request;
 import com.github.megatronking.netbare.gateway.Response;
 import com.github.megatronking.netbare.gateway.VirtualGateway;
 import com.github.megatronking.netbare.ip.Protocol;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.net.Session;
 
 import java.io.IOException;
@@ -36,6 +37,8 @@ import java.util.Set;
  * @since 2018-11-17 23:10
  */
 public final class NetBareVirtualGateway extends VirtualGateway {
+
+    private static final String TAG = "NetBareVirtualGateway";
 
     /**
      * Policy is indeterminate, we should resolve the policy before process data.
@@ -70,7 +73,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
         NetBareConfig config = NetBare.get().getConfig();
         if (config == null || (config.excludeSelf && session.uid == Process.myUid())) {
             // Exclude the app itself.
-            mLog.w("Exclude an app-self connection!");
+            mLog.w(TAG, "Exclude an app-self connection!");
             mPolicy = POLICY_DISALLOWED;
         } else {
             mPolicy = POLICY_INDETERMINATE;
@@ -80,7 +83,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
     @Override
     public void onRequest(ByteBuffer buffer) throws IOException {
         if (mRequestFinished) {
-            mLog.w("Drop a buffer due to request has finished.");
+            mLog.w(TAG, "Drop a buffer due to request has finished.");
             return;
         }
         resolvePolicyIfNecessary(buffer);
@@ -94,7 +97,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
     @Override
     public void onResponse(ByteBuffer buffer) throws IOException {
         if (mResponseFinished) {
-            mLog.w("Drop a buffer due to response has finished.");
+            mLog.w(TAG, "Drop a buffer due to response has finished.");
             return;
         }
         resolvePolicyIfNecessary(buffer);
@@ -110,7 +113,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
         if (mRequestFinished) {
             return;
         }
-        mLog.i("Gateway request finished!");
+        mLog.i(TAG, "Gateway request finished!");
         mRequestFinished = true;
         if (mPolicy == POLICY_ALLOWED) {
             mGateway.onRequestFinished();
@@ -124,7 +127,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
         if (mResponseFinished) {
             return;
         }
-        mLog.i("Gateway response finished!");
+        mLog.i(TAG, "Gateway response finished!");
         mResponseFinished = true;
         if (mPolicy == POLICY_ALLOWED) {
             mGateway.onResponseFinished();
@@ -259,7 +262,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
         int limit = offset + size;
         // Client Hello
         if (size <= 43 || buffer[offset] != 0x16) {
-            mLog.w("Failed to get host from SNI: Bad ssl packet.");
+            mLog.w(TAG, "Failed to get host from SNI: Bad ssl packet.");
             return null;
         }
         // Skip 43 byte header
@@ -267,7 +270,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
 
         // Read sessionID
         if (offset + 1 > limit) {
-            mLog.w("Failed to get host from SNI: No session id.");
+            mLog.w(TAG, "Failed to get host from SNI: No session id.");
             return null;
         }
         int sessionIDLength = buffer[offset++] & 0xFF;
@@ -275,7 +278,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
 
         // Read cipher suites
         if (offset + 2 > limit) {
-            mLog.w("Failed to get host from SNI: No cipher suites.");
+            mLog.w(TAG, "Failed to get host from SNI: No cipher suites.");
             return null;
         }
 
@@ -285,7 +288,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
 
         // Read Compression method.
         if (offset + 1 > limit) {
-            mLog.w("Failed to get host from SNI: No compression method.");
+            mLog.w(TAG, "Failed to get host from SNI: No compression method.");
             return null;
         }
         int compressionMethodLength = buffer[offset++] & 0xFF;
@@ -293,14 +296,14 @@ public final class NetBareVirtualGateway extends VirtualGateway {
 
         // Read Extensions
         if (offset + 2 > limit) {
-            mLog.w("Failed to get host from SNI: no extensions.");
+            mLog.w(TAG, "Failed to get host from SNI: no extensions.");
             return null;
         }
         int extensionsLength = readShort(buffer, offset) & 0xFFFF;
         offset += 2;
 
         if (offset + extensionsLength > limit) {
-            mLog.w("Failed to get host from SNI: no sni.");
+            mLog.w(TAG, "Failed to get host from SNI: no sni.");
             return null;
         }
 
@@ -322,7 +325,7 @@ public final class NetBareVirtualGateway extends VirtualGateway {
             }
 
         }
-        mLog.w("Failed to get host from SNI: no host.");
+        mLog.w(TAG, "Failed to get host from SNI: no host.");
         return null;
     }
 

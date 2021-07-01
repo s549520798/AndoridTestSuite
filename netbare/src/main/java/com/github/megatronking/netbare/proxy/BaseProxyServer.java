@@ -15,7 +15,7 @@
  */
 package com.github.megatronking.netbare.proxy;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 
 import java.io.IOException;
 
@@ -27,6 +27,8 @@ import java.io.IOException;
  * @since 2018-10-10 00:31
  */
 /* package */ abstract class BaseProxyServer extends ProxyServer implements Runnable {
+
+    private static final String TAG = "BaseProxyServer";
 
     /**
      * Waiting the specific protocol packets and trying to sent to real remote server.
@@ -61,7 +63,7 @@ import java.io.IOException;
             try {
                 process();
             } catch (IOException e) {
-                NetBareLog.e(e.getMessage());
+                NetBareLog.e(TAG, e.getMessage());
             }
         }
     }

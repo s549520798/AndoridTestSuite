@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.VpnService;
 import androidx.annotation.NonNull;
 
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.ssl.SSLEngineFactory;
 
 /**
@@ -39,6 +40,8 @@ import com.github.megatronking.netbare.ssl.SSLEngineFactory;
  * @since 2018-10-08 21:09
  */
 public abstract class NetBareService extends VpnService {
+
+    private static final String TAG = "NetBareService";
 
     /**
      * Start capturing target app's net packets.
@@ -106,7 +109,7 @@ public abstract class NetBareService extends VpnService {
                     "NetBareConfig");
         }
 
-        NetBareLog.i("Start NetBare service!");
+        NetBareLog.i(TAG, "Start NetBare service!");
         SSLEngineFactory.updateProviders(config.keyManagerProvider, config.trustManagerProvider);
         mNetBareThread = new NetBareThread(this, config);
         mNetBareThread.start();
@@ -116,7 +119,7 @@ public abstract class NetBareService extends VpnService {
         if (mNetBareThread == null) {
             return;
         }
-        NetBareLog.i("Stop NetBare service!");
+        NetBareLog.i(TAG, "Stop NetBare service!");
         mNetBareThread.interrupt();
         mNetBareThread = null;
     }

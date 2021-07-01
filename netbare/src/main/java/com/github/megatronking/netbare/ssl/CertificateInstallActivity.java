@@ -23,7 +23,7 @@ import android.security.KeyChain;
 
 import androidx.annotation.Nullable;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +35,8 @@ import java.io.IOException;
  * @since 2018-11-10 21:18
  */
 public class CertificateInstallActivity extends Activity {
+
+    private static final String TAG = "CertificateInstallActivity";
 
     private static final int REQUEST_CODE_INSTALL = 1;
     public static final String EXTRA_ALIAS = "jks_alias";
@@ -52,7 +54,7 @@ public class CertificateInstallActivity extends Activity {
         try {
             startActivityForResult(intent, REQUEST_CODE_INSTALL);
         } catch (ActivityNotFoundException e) {
-            NetBareLog.e("Unable to start certificate installer.");
+            NetBareLog.e(TAG, "Unable to start certificate installer.");
             finish();
         }
     }
@@ -68,7 +70,7 @@ public class CertificateInstallActivity extends Activity {
                     throw new IOException("Create jks file failed.");
                 }
             } catch (IOException e) {
-                NetBareLog.wtf(e);
+                NetBareLog.wtf(TAG, e);
             }
         }
         finish();

@@ -18,6 +18,8 @@ package com.github.megatronking.netbare;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.github.megatronking.netbare.log.NetBareLog;
+
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -28,6 +30,8 @@ import java.io.IOException;
  * @since 2018-10-08 22:52
  */
 public final class NetBareUtils {
+
+    private static final String TAG = "NetBareUtils";
 
     /**
      * Http line end (CRLF) symbol.
@@ -99,7 +103,7 @@ public final class NetBareUtils {
             try {
                 closeable.close();
             } catch (IOException e) {
-                NetBareLog.wtf(e);
+                NetBareLog.wtf(TAG, e);
             }
         }
     }

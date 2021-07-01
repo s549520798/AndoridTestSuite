@@ -22,6 +22,7 @@ import android.os.ParcelFileDescriptor;
 import com.github.megatronking.netbare.ip.IpAddress;
 import com.github.megatronking.netbare.ip.IpHeader;
 import com.github.megatronking.netbare.ip.Protocol;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.net.UidDumper;
 import com.github.megatronking.netbare.proxy.IcmpProxyServerForwarder;
 import com.github.megatronking.netbare.proxy.ProxyServerForwarder;
@@ -46,6 +47,8 @@ import java.util.Map;
  * @since 2018-10-08 19:38
  */
 /* package */ final class NetBareThread extends Thread {
+
+	private static final String TAG = "NetBareThread";
 
 	private final NetBareConfig mConfig;
 	private final VpnService mVpnService;
@@ -81,7 +84,7 @@ import java.util.Map;
 		try {
 			packetsTransfer = new PacketsTransfer(mVpnService, mConfig);
 		} catch (IOException e) {
-			NetBareLog.wtf(e);
+			NetBareLog.wtf(TAG, e);
 		}
 		if (packetsTransfer != null) {
 			// Establish VPN, it runs a while loop unless failed.
@@ -122,7 +125,7 @@ import java.util.Map;
 				builder.addAllowedApplication(mVpnService.getPackageName());
 			}
 		} catch (PackageManager.NameNotFoundException e) {
-			NetBareLog.wtf(e);
+			NetBareLog.wtf(TAG, e);
 		}
 		vpnDescriptor = builder.establish();
 		if (vpnDescriptor == null) {
@@ -146,7 +149,7 @@ import java.util.Map;
 			}
 		} catch (IOException e) {
 			if (!isInterrupted()) {
-				NetBareLog.wtf(e);
+				NetBareLog.wtf(TAG, e);
 			}
 		}
 	}
@@ -195,7 +198,7 @@ import java.util.Map;
 
 		private void transfer(byte[] packet, int len, OutputStream output) {
 			if (len < IpHeader.MIN_HEADER_LENGTH) {
-				NetBareLog.w("Ip header length < " + IpHeader.MIN_HEADER_LENGTH);
+				NetBareLog.w(TAG,"Ip header length < " + IpHeader.MIN_HEADER_LENGTH);
 				return;
 			}
 			IpHeader ipHeader = new IpHeader(packet, 0);
@@ -204,7 +207,7 @@ import java.util.Map;
 			if (forwarder != null) {
 				forwarder.forward(packet, len, output);
 			} else {
-				NetBareLog.w("Unknown ip protocol: " + ipHeader.getProtocol());
+				NetBareLog.w(TAG, "Unknown ip protocol: " + ipHeader.getProtocol());
 			}
 		}
 

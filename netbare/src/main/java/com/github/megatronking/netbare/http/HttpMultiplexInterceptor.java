@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.http;
 
 import androidx.annotation.NonNull;
 
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.ip.Protocol;
 
 import java.io.IOException;
@@ -33,6 +33,8 @@ import java.nio.ByteBuffer;
  * @since 2018-12-15 15:17
  */
 /* package */ class HttpMultiplexInterceptor extends HttpIndexedInterceptor {
+
+    private static final String TAG = "HttpMultiplexInterceptor";
 
     private final HttpZygoteRequest mZygoteRequest;
     private final HttpZygoteResponse mZygoteResponse;
@@ -64,7 +66,7 @@ import java.nio.ByteBuffer;
                 mLog = new NetBareXLog(Protocol.TCP, chain.request().ip(), chain.request().port());
             }
             mResponseIndex = 0;
-            mLog.w("Multiplex is found in one connection.");
+            mLog.w(TAG, "Multiplex is found in one connection.");
             // Multiplex sessions.
             HttpId newId = new HttpId();
             mZygoteRequest.zygote(newId);

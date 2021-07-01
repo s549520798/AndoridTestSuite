@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.proxy;
 
 import android.net.VpnService;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.ip.IpHeader;
 import com.github.megatronking.netbare.ip.Protocol;
@@ -36,6 +36,8 @@ import java.io.OutputStream;
  * @since 2018-10-09 01:30
  */
 public final class TcpProxyServerForwarder implements ProxyServerForwarder {
+
+    private static final String TAG = "TcpProxyServerForwarder";
 
     private final SessionProvider mSessionProvider;
     private final TcpProxyServer mProxyServer;
@@ -106,7 +108,7 @@ public final class TcpProxyServerForwarder implements ProxyServerForwarder {
             // Proxy server responses forward client request.
             Session session = mSessionProvider.query(remotePort);
             if (session == null) {
-                NetBareLog.w("No session saved with key: " + remotePort);
+                NetBareLog.w(TAG, "No session saved with key: " + remotePort);
                 return;
             }
             // Forward proxy server response to client.
@@ -123,7 +125,7 @@ public final class TcpProxyServerForwarder implements ProxyServerForwarder {
         try {
             output.write(packet, 0, len);
         } catch (IOException e) {
-            NetBareLog.e(e.getMessage());
+            NetBareLog.e(TAG, e.getMessage());
         }
     }
 

@@ -17,7 +17,7 @@ package com.github.megatronking.netbare.proxy;
 
 import android.net.VpnService;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.ip.IpHeader;
 import com.github.megatronking.netbare.ip.Protocol;
@@ -36,6 +36,8 @@ import java.io.OutputStream;
  * @since 2018-10-09 01:30
  */
 public final class UdpProxyServerForwarder implements ProxyServerForwarder {
+
+    private static final String TAG = "UdpProxyServerForwarder";
 
     private final SessionProvider mSessionProvider;
     private final UdpProxyServer mProxyServer;
@@ -80,7 +82,7 @@ public final class UdpProxyServerForwarder implements ProxyServerForwarder {
             mProxyServer.send(udpHeader, output);
             session.sendDataSize += udpDataSize;
         } catch (IOException e) {
-            NetBareLog.e(e.getMessage());
+            NetBareLog.e(TAG, e.getMessage());
         }
     }
 

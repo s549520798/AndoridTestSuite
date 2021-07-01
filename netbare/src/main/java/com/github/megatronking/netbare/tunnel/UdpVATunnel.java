@@ -30,7 +30,7 @@
  */
 package com.github.megatronking.netbare.tunnel;
 
-import com.github.megatronking.netbare.NetBareLog;
+import com.github.megatronking.netbare.log.NetBareLog;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.NetBareVirtualGateway;
 import com.github.megatronking.netbare.gateway.Request;
@@ -54,6 +54,8 @@ import java.nio.ByteBuffer;
  */
 public class UdpVATunnel extends VirtualGatewayTunnel implements NioCallback,
         Tunnel {
+
+    private static final String TAG = "UdpVATunnel";
 
     private final NioTunnel mRemoteTunnel;
     private final OutputStream mOutput;
@@ -145,7 +147,7 @@ public class UdpVATunnel extends VirtualGatewayTunnel implements NioCallback,
         try {
             mGateway.onRequest(header.data());
         } catch (IOException e) {
-            NetBareLog.e(e.getMessage());
+            NetBareLog.e(TAG, e.getMessage());
             close();
         }
     }

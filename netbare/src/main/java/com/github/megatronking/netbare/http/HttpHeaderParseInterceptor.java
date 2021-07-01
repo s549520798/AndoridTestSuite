@@ -18,7 +18,7 @@ package com.github.megatronking.netbare.http;
 import androidx.annotation.NonNull;
 
 import com.github.megatronking.netbare.NetBareUtils;
-import com.github.megatronking.netbare.NetBareXLog;
+import com.github.megatronking.netbare.log.NetBareXLog;
 import com.github.megatronking.netbare.ip.Protocol;
 
 import java.io.IOException;
@@ -34,6 +34,8 @@ import java.util.List;
  * @since 2018-12-09 12:19
  */
 /* package */ final class HttpHeaderParseInterceptor extends HttpIndexedInterceptor {
+
+    private static final String TAG = "HttpHeaderParseInterceptor";
 
     private NetBareXLog mLog;
 
@@ -71,20 +73,20 @@ import java.util.List;
         String[] headers = headerString.split(NetBareUtils.LINE_END_REGEX);
         String[] requestLine = headers[0].split(" ");
         if (requestLine.length < 3) {
-            mLog.w("Unexpected http request line: " + headers[0]);
+            mLog.w(TAG, "Unexpected http request line: " + headers[0]);
             return;
         }
         // Method
         HttpMethod method = HttpMethod.parse(requestLine[0]);
         if (method == HttpMethod.UNKNOWN) {
-            mLog.w("Unknown http request method: " + requestLine[0]);
+            mLog.w(TAG, "Unknown http request method: " + requestLine[0]);
             return;
         }
         session.method = method;
         // Http Protocol
         HttpProtocol protocol = HttpProtocol.parse(requestLine[requestLine.length - 1]);
         if (protocol == HttpProtocol.UNKNOWN) {
-            mLog.w("Unknown http request protocol: " + requestLine[requestLine.length - 1]);
+            mLog.w(TAG, "Unknown http request protocol: " + requestLine[requestLine.length - 1]);
             return;
         }
         session.protocol = protocol;
@@ -96,7 +98,7 @@ import java.util.List;
 
         // Http request headers
         if (headers.length <= 1) {
-            mLog.w("Unexpected http request headers.");
+            mLog.w(TAG, "Unexpected http request headers.");
             return;
         }
         for (int i = 1; i < headers.length; i++) {
@@ -107,7 +109,7 @@ import java.util.List;
             }
             String[] nameValue = requestHeader.split(":");
             if (nameValue.length < 2) {
-                mLog.w("Unexpected http request header: " + requestHeader);
+                mLog.w(TAG, "Unexpected http request header: " + requestHeader);
                 continue;
             }
             String name = nameValue[0].trim();
@@ -131,19 +133,19 @@ import java.util.List;
         String[] headers = headerString.split(NetBareUtils.LINE_END_REGEX);
         String[] responseLine = headers[0].split(" ");
         if (responseLine.length < 2) {
-            mLog.w("Unexpected http response line: " + headers[0]);
+            mLog.w(TAG, "Unexpected http response line: " + headers[0]);
             return;
         }
         // Http Protocol
         HttpProtocol protocol = HttpProtocol.parse(responseLine[0]);
         if (protocol == HttpProtocol.UNKNOWN) {
-            mLog.w("Unknown http response protocol: " + responseLine[0]);
+            mLog.w(TAG, "Unknown http response protocol: " + responseLine[0]);
             return;
         }
         if (session.protocol != protocol) {
             // Protocol downgrade
             if (session.protocol != null) {
-                mLog.w("Unmatched http protocol, request is " + session.protocol +
+                mLog.w(TAG, "Unmatched http protocol, request is " + session.protocol +
                         " but response is " + responseLine[0]);
             }
             session.protocol = protocol;
@@ -151,7 +153,7 @@ import java.util.List;
         // Code
         int code = NetBareUtils.parseInt(responseLine[1], -1);
         if (code == -1) {
-            mLog.w("Unexpected http response code: " + responseLine[1]);
+            mLog.w(TAG, "Unexpected http response code: " + responseLine[1]);
             return;
         }
         session.code = code;
@@ -161,7 +163,7 @@ import java.util.List;
 
         // Http response headers
         if (headers.length <= 1) {
-            mLog.w("Unexpected http response headers.");
+            mLog.w(TAG, "Unexpected http response headers.");
             return;
         }
         for (int i = 1; i < headers.length; i++) {
@@ -172,7 +174,7 @@ import java.util.List;
             }
             String[] nameValue = responseHeader.split(":");
             if (nameValue.length < 2) {
-                mLog.w("Unexpected http response header: " + responseHeader);
+                mLog.w(TAG, "Unexpected http response header: " + responseHeader);
                 continue;
             }
             String name = nameValue[0].trim();
