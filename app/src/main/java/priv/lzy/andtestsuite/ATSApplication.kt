@@ -4,10 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.github.megatronking.netbare.NetBare
-import com.github.megatronking.netbare.NetBareListener
 import com.github.megatronking.netbare.log.NetBareLogListener
+import dagger.hilt.android.HiltAndroidApp
 import priv.lzy.andtestsuite.utils.LogUtil
 
+@HiltAndroidApp
 class ATSApplication : Application() {
     private val mTag = "ATSApplication"
 

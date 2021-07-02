@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import dagger.hilt.android.AndroidEntryPoint
 import priv.lzy.andtestsuite.R
 
 class MainActivity : AppCompatActivity(){

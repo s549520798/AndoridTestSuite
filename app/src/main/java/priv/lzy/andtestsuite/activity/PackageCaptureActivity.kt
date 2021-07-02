@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import dagger.hilt.android.AndroidEntryPoint
 import priv.lzy.andtestsuite.R
 import priv.lzy.andtestsuite.service.TestSuiteVpnService
 
+@AndroidEntryPoint
 class PackageCaptureActivity : AppCompatActivity() {
 
     private lateinit var mBtnBindService: Button
