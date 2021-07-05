@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -11,5 +11,23 @@
     <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight">
 
     </style>
+
+    <style name="Widget.ATS.Toolbar" parent="Widget.MaterialComponents.Toolbar.PrimarySurface">
+        <!-- Toolbar should always be within an AppBarLayout which provides the background. -->
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.ATS.AppBarLayout" parent="">
+        <item name="android:textColorPrimary">?attr/colorOnPrimarySurface</item>
+        <item name="colorControlNormal">?attr/colorOnPrimarySurface</item>
+        <item name="android:popupTheme" tools:targetApi="lollipop">@style/Theme.ATS.PopupMenu</item>
+        <item name="popupTheme">@style/Theme.ATS.PopupMenu</item>
+    </style>
+
+    <style name="Theme.ATS.PopupMenu" parent="">
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+    </style>
+
 
 </resources>

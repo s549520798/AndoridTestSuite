@@ -47,6 +47,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     //hilt
     implementation "com.google.dagger:hilt-android:2.28-alpha"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
 
     //jetpack 生命周期组件

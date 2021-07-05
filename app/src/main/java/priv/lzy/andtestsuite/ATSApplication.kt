@@ -2,6 +2,7 @@ package priv.lzy.andtestsuite
 
 import android.app.Application
 import android.content.Context
+import android.os.StrictMode
 import android.util.Log
 import com.github.megatronking.netbare.NetBare
 import com.github.megatronking.netbare.log.NetBareLogListener
@@ -23,6 +24,10 @@ class ATSApplication : Application() {
     }
 
     override fun onCreate() {
+        // Enable strict mode before Dagger creates graph
+        if (BuildConfig.DEBUG) {
+            enableStrictMode()
+        }
         super.onCreate()
         LogUtil.i(mTag, "onCreate")
         sInstance = this
@@ -35,6 +40,23 @@ class ATSApplication : Application() {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         LogUtil.i(mTag, "attachBaseContext")
+    }
+
+    private fun enableStrictMode() {
+        StrictMode.setThreadPolicy(
+            StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                .penaltyLog()
+                .build()
+        )
+        StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+            .detectActivityLeaks()
+            .detectLeakedClosableObjects()
+            .detectLeakedSqlLiteObjects()
+            .penaltyLog()
+            .build())
     }
 
     private val netBareLogListener = object : NetBareLogListener {
