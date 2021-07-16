@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.DayNight"
+        android:theme="@style/ATSTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity android:name=".activity.MainActivity">

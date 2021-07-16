@@ -6,12 +6,15 @@ import android.os.StrictMode
 import android.util.Log
 import com.github.megatronking.netbare.NetBare
 import com.github.megatronking.netbare.log.NetBareLogListener
+import com.github.megatronking.netbare.ssl.JKS
 import dagger.hilt.android.HiltAndroidApp
 import priv.lzy.andtestsuite.utils.LogUtil
 
 @HiltAndroidApp
 class ATSApplication : Application() {
     private val mTag = "ATSApplication"
+
+    private lateinit var mJKS: JKS
 
     companion object {
         const val JSK_ALIAS = "AndroidTestSuite"
@@ -32,6 +35,9 @@ class ATSApplication : Application() {
         LogUtil.i(mTag, "onCreate")
         sInstance = this
 
+        mJKS = JKS(this, JSK_ALIAS, JSK_ALIAS.toCharArray(), JSK_ALIAS,JSK_ALIAS,
+            JSK_ALIAS, JSK_ALIAS, JSK_ALIAS)
+
         // 初始化NetBare
         NetBare.setOnNetBareLogListener(netBareLogListener)
         NetBare.get().attachApplication(this, BuildConfig.DEBUG)
@@ -40,6 +46,10 @@ class ATSApplication : Application() {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         LogUtil.i(mTag, "attachBaseContext")
+    }
+
+    fun getJKS() : JKS{
+        return mJKS
     }
 
     private fun enableStrictMode() {

@@ -45,7 +45,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <View
-        android:id="@+id/cat_toc_grid_top_divider"
+        android:id="@+id/topic_grid_top_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/topic_grid_divider_size"
         android:background="@color/colorDivider"
