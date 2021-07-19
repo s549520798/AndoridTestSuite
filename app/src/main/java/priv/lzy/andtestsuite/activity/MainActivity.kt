@@ -2,6 +2,7 @@ package priv.lzy.andtestsuite.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import dagger.hilt.android.HiltAndroidApp
 import priv.lzy.andtestsuite.R
 import priv.lzy.andtestsuite.fragment.TopicFragment
 

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AndTestSuite</string>
     <string name="topic_appbar_setting">设置</string>
+    <string name="topic_item_feature">开发中</string>
 </resources>

@@ -18,20 +18,25 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import priv.lzy.andtestsuite.R
+import priv.lzy.andtestsuite.adapter.TopicAdapter
+import priv.lzy.andtestsuite.data.suites.FeatureSuite
+import priv.lzy.andtestsuite.view.GridDividerDecoration
 import java.text.Collator
 import java.util.*
+import kotlin.collections.HashSet
 import kotlin.math.abs
 
 
-public class TopicFragment : Fragment() {
+class TopicFragment : Fragment() {
 
     private val GRID_SPAN_COUNT_MIN = 1
     private val GRID_SPAN_COUNT_MAX = 4
 
     private var appBarLayout: AppBarLayout? = null
     private var gridTopDivider: View? = null
-    private var recyclerView: RecyclerView? = null
+    private lateinit var recyclerView: RecyclerView
     private var preferencesButton: ImageButton? = null
+    private lateinit var featureSuites: Set<FeatureSuite>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,29 +78,29 @@ public class TopicFragment : Fragment() {
 
         val gridSpanCount: Int = calculateGridSpanCount()
 
-        recyclerView?.setLayoutManager(GridLayoutManager(context, gridSpanCount))
-        recyclerView?.addItemDecoration(
+        recyclerView.setLayoutManager(GridLayoutManager(context, gridSpanCount))
+        recyclerView.addItemDecoration(
             GridDividerDecoration(
                 resources.getDimensionPixelSize(R.dimen.topic_grid_divider_size),
-                ContextCompat.getColor(context, R.color.colorDivider),
+                ContextCompat.getColor(requireContext(), R.color.colorDivider),
                 gridSpanCount
             )
         )
 
-        val featureList: List<FeatureDemo> = ArrayList<Any?>(featureDemos)
+        val featureList: List<FeatureSuite> = ArrayList(featureSuites)
         // Sort features alphabetically
         // Sort features alphabetically
         val collator = Collator.getInstance()
         Collections.sort(
             featureList,
-            Comparator<T> { feature1: T, feature2: T ->
+            Comparator<FeatureSuite> { feature1: FeatureSuite, feature2: FeatureSuite ->
                 collator.compare(
-                    context!!.getString(feature1.getTitleResId()),
-                    context!!.getString(feature2.getTitleResId())
+                    requireContext().getString(feature1.getTitleResId()),
+                    requireContext().getString(feature2.getTitleResId())
                 )
             })
 
-        val tocAdapter = TocAdapter(getActivity(), featureList)
+        val tocAdapter = TopicAdapter(getActivity(), featureList)
         recyclerView.setAdapter(tocAdapter)
 
         initPreferencesButton()
