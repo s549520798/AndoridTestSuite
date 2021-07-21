@@ -17,16 +17,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import dagger.hilt.android.AndroidEntryPoint
 import priv.lzy.andtestsuite.R
 import priv.lzy.andtestsuite.adapter.TopicAdapter
 import priv.lzy.andtestsuite.data.suites.FeatureSuite
+import priv.lzy.andtestsuite.utils.FeatureSuiteUtils
 import priv.lzy.andtestsuite.view.GridDividerDecoration
 import java.text.Collator
 import java.util.*
-import kotlin.collections.HashSet
 import kotlin.math.abs
 
-
+@AndroidEntryPoint
 class TopicFragment : Fragment() {
 
     private val GRID_SPAN_COUNT_MIN = 1
@@ -35,11 +36,23 @@ class TopicFragment : Fragment() {
     private var appBarLayout: AppBarLayout? = null
     private var gridTopDivider: View? = null
     private lateinit var recyclerView: RecyclerView
-    private var preferencesButton: ImageButton? = null
+    private var settingButton: ImageButton? = null
     private lateinit var featureSuites: Set<FeatureSuite>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val defaultSuite: String = FeatureSuiteUtils.getDefaultSuite(requireContext())
+        if (defaultSuite.isNotEmpty() && savedInstanceState == null) {
+            for (demo in featureSuites) {
+                val fragment: Fragment = demo.createFragment()
+                val key = fragment.javaClass.name
+                if (key == defaultSuite) {
+                    FeatureSuiteUtils.startFragment(activity, fragment, "fragment_content")
+                    return
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -60,7 +73,7 @@ class TopicFragment : Fragment() {
         appBarLayout = view.findViewById(R.id.topic_app_bar_layout)
         gridTopDivider = view!!.findViewById(R.id.topic_grid_top_divider)
         recyclerView = view.findViewById(R.id.topic_grid)
-        preferencesButton = view.findViewById(R.id.topic_preferences_button)
+        settingButton = view.findViewById(R.id.topic_setting_button)
         ViewCompat.setOnApplyWindowInsetsListener(
             view
         ) { v: View?, insetsCompat: WindowInsetsCompat ->
@@ -78,7 +91,7 @@ class TopicFragment : Fragment() {
 
         val gridSpanCount: Int = calculateGridSpanCount()
 
-        recyclerView.setLayoutManager(GridLayoutManager(context, gridSpanCount))
+        recyclerView.layoutManager = GridLayoutManager(context, gridSpanCount)
         recyclerView.addItemDecoration(
             GridDividerDecoration(
                 resources.getDimensionPixelSize(R.dimen.topic_grid_divider_size),
@@ -92,20 +105,18 @@ class TopicFragment : Fragment() {
         // Sort features alphabetically
         val collator = Collator.getInstance()
         Collections.sort(
-            featureList,
-            Comparator<FeatureSuite> { feature1: FeatureSuite, feature2: FeatureSuite ->
-                collator.compare(
-                    requireContext().getString(feature1.getTitleResId()),
-                    requireContext().getString(feature2.getTitleResId())
-                )
-            })
+            featureList
+        ) { feature1: FeatureSuite, feature2: FeatureSuite ->
+            collator.compare(
+                requireContext().getString(feature1.getTitleResId()),
+                requireContext().getString(feature2.getTitleResId())
+            )
+        }
 
-        val tocAdapter = TopicAdapter(getActivity(), featureList)
-        recyclerView.setAdapter(tocAdapter)
+        val tocAdapter = TopicAdapter(requireActivity(), featureList)
+        recyclerView.adapter = tocAdapter
 
-        initPreferencesButton()
-
-        initEdgeToEdgeButton()
+        initSettingButton()
         return view
     }
 
@@ -132,6 +143,14 @@ class TopicFragment : Fragment() {
             GRID_SPAN_COUNT_MIN,
             GRID_SPAN_COUNT_MAX
         )
+    }
+
+    private fun initSettingButton() {
+        preferencesButton!!.setOnClickListener { v: View? ->
+            PreferencesDialogFragment().show(
+                parentFragmentManager, "preferences-screen"
+            )
+        }
     }
 
     companion object {

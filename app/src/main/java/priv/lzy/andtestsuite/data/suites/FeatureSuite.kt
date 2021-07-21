@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IntDef
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 
 abstract class FeatureSuite {
 
@@ -57,4 +58,6 @@ abstract class FeatureSuite {
     }
 
     abstract fun createFragment(): Fragment
+
+    abstract fun createActivity(): FragmentActivity
 }

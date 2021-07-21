@@ -1,5 +1,6 @@
 package priv.lzy.andtestsuite.utils
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -16,6 +17,11 @@ class FeatureSuiteUtils {
     companion object {
         private const val ARG_TRANSITION_NAME = "ARG_TRANSITION_NAME"
         private const val MAIN_ACTIVITY_FRAGMENT_CONTAINER_ID: Int = R.id.container
+
+        fun getDefaultSuite(context: Context): String{
+            //TODO
+            return ""
+        }
 
         fun startFragment(
             activity: FragmentActivity,
@@ -48,8 +54,8 @@ class FeatureSuiteUtils {
                     sharedElement,
                     R.attr.colorSurface
                 )
-                transform.setFadeMode(MaterialContainerTransform.FADE_MODE_THROUGH)
-                fragment.setSharedElementEnterTransition(transform)
+                transform.fadeMode = MaterialContainerTransform.FADE_MODE_THROUGH
+                fragment.sharedElementEnterTransition = transform
                 transaction.addSharedElement(sharedElement, sharedElementName)
 
                 val hold = Hold()

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="topic_preferences_button" type="id"/>
+    <item name="topic_setting_button" type="id"/>
 </resources>

@@ -2,19 +2,24 @@ package priv.lzy.andtestsuite.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.AndroidEntryPoint
 import priv.lzy.andtestsuite.R
+import priv.lzy.andtestsuite.databinding.ActivityMainBinding
 import priv.lzy.andtestsuite.fragment.TopicFragment
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mTopicFragment: TopicFragment
+    @Inject
+    lateinit var mTopicFragment: TopicFragment
+
+    private lateinit var mMainBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
-            mTopicFragment = TopicFragment()
             supportFragmentManager.beginTransaction().add(R.id.main_container, mTopicFragment)
                 .commit()
         }
