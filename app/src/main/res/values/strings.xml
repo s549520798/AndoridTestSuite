@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">AndTestSuite</string>
+    <string name="app_title">Test Suite</string>
+    <string name="app_second_title">for android</string>
     <string name="topic_appbar_setting">设置</string>
     <string name="topic_item_feature">开发中</string>
 </resources>

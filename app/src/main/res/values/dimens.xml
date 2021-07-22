@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="app_title_size">32sp</dimen>
+    <dimen name="app_second_title_size">18sp</dimen>
     <dimen name="topic_tall_toolbar_height">112dp</dimen>
     <dimen name="topic_toolbar_image_offset">16dp</dimen>
     <dimen name="topic_grid_divider_size">1dp</dimen>
