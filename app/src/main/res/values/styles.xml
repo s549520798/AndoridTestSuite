@@ -30,9 +30,9 @@
     </style>
 
     <style name="Widget.Catalog.ChoosePreferencesButton" parent="Widget.ATS.TocButton">
-        <item name="android:id">@id/topic_preferences_button</item>
+        <item name="android:id">@id/topic_setting_button</item>
         <item name="android:layout_gravity">center_vertical|end</item>
-        <item name="srcCompat">@drawable/ic_settings_24px</item>
+        <item name="srcCompat">@drawable/ic_setting</item>
         <item name="android:contentDescription">@string/topic_appbar_setting</item>
     </style>
 
